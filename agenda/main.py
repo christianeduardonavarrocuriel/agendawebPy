@@ -45,10 +45,16 @@ class Insertar:
         try:
             form = web.input()
             print(f"Form data: {form}")
+            
+            # Validación: verificar que los campos no estén vacíos
+            if not form.nombre.strip() or not form.email.strip():
+                print("Error: Campos vacíos detectados")
+                return render.insertar()
+            
             conection = sqlite3.connect("agenda.db")
             cursor = conection.cursor()
             sql = "INSERT INTO personas(nombre, email) VALUES (?, ?);"
-            data = (form.nombre, form.email)
+            data = (form.nombre.strip(), form.email.strip())
             cursor.execute(sql, data)
             print("Executed SQL query successfully.")
             conection.commit()
@@ -113,10 +119,22 @@ class Editar:
     def POST(self, id_persona):
         try:
             form = web.input()
+            
+            # Validación: verificar que los campos no estén vacíos
+            if not form.nombre.strip() or not form.email.strip():
+                print("Error: Campos vacíos detectados en edición")
+                # Recargar la página de edición si hay campos vacíos
+                conection = sqlite3.connect("agenda.db")
+                cursor = conection.cursor()
+                personas = cursor.execute("select * from personas where id_persona = ?;", (id_persona,))
+                respuesta = {"persona": personas.fetchone(), "error": None}
+                conection.close()
+                return render.editar(respuesta)
+            
             conection = sqlite3.connect("agenda.db")
             cursor = conection.cursor()
             sql = "UPDATE personas SET nombre = ?, email = ? WHERE id_persona = ?;"
-            data = (form.nombre, form.email, id_persona)
+            data = (form.nombre.strip(), form.email.strip(), id_persona)
             cursor.execute(sql, data)
             conection.commit()
             conection.close()

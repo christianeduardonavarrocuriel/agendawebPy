@@ -12,10 +12,10 @@ $def with (respuesta={})
             $ email = '%s' % respuesta['persona'][2] if respuesta.get('persona') else ''
             
             <label>Nombre</label>
-            <input type="text" name="nombre" id="nombre" value=$nombre>
+            <input type="text" name="nombre" id="nombre" value=$nombre required>
             <br>
             <label>Email</label>
-            <input type="text" name="email" id="email" value=$email>
+            <input type="email" name="email" id="email" value=$email required>
             <br>
             <input type="submit" value="Editar">
             <a href="/">
