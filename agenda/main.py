@@ -4,7 +4,8 @@ import sqlite3
 urls = (
     "/", "Index",
     "/insertar","Insertar",
-    "/detalle/(.*)", "Detalle"
+    "/detalle/(.*)", "Detalle",
+    "/editar/(.*)", "Editar"
     )
 
 render = web.template.render("templates/")
@@ -83,6 +84,46 @@ class Detalle:
                 "error": "Error en la base de datos"
             }
             return render.detalle(respuesta)
+
+
+class Editar:
+    def GET(self, id_persona):
+        try:
+            conection = sqlite3.connect("agenda.db")
+            cursor = conection.cursor()
+            sql = "select * from personas where id_persona = ?;"
+            datos = (id_persona,)
+            personas = cursor.execute(sql, datos)
+            
+            respuesta = {
+                "persona": personas.fetchone(),
+                "error": None
+            }
+            conection.close()
+            return render.editar(respuesta)
+        except sqlite3.OperationalError as error:
+            print(f"Error 005: {error.args[0]}")
+            respuesta = {
+                "persona": {},
+                "error": "Error en la base de datos"
+            }
+            return render.editar(respuesta)
+    
+    def POST(self, id_persona):
+        try:
+            form = web.input()
+            conection = sqlite3.connect("agenda.db")
+            cursor = conection.cursor()
+            sql = "UPDATE personas SET nombre = ?, email = ? WHERE id_persona = ?;"
+            data = (form.nombre, form.email, id_persona)
+            cursor.execute(sql, data)
+            conection.commit()
+            conection.close()
+            return web.seeother("/")
+        except sqlite3.OperationalError as error:
+            print(f"Error 006: {error.args[0]}")
+            return web.seeother("/")
+
 
 application = app.wsgifunc()
 

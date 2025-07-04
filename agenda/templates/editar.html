@@ -1,0 +1,26 @@
+$def with (respuesta={})
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <title>SQLITE demo</title>
+    </head>
+    <body>
+        <h1>Editar Persona</h1>
+
+        <form method="POST">
+            $ nombre = '%s' % respuesta['persona'][1] if respuesta.get('persona') else ''
+            $ email = '%s' % respuesta['persona'][2] if respuesta.get('persona') else ''
+            
+            <label>Nombre</label>
+            <input type="text" name="nombre" id="nombre" value=$nombre>
+            <br>
+            <label>Email</label>
+            <input type="text" name="email" id="email" value=$email>
+            <br>
+            <input type="submit" value="Actualizar">
+            <a href="/">
+                <button type="button">Regresar</button>
+            </a>
+        </form>
+    </body>
+</html>
