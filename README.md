@@ -106,7 +106,7 @@ waitress-serve --port=8080 main:application
 Si se desea ejecutar en el puerto 80, se debe ejecutar cambiando el puerto en el comando anterior:
 
 ```bash
-waitress-serve --port=80 main:application
+sudo waitress-serve --port=80 main:application
 ```
 
 ## 5. Ejecutar la aplicacion con web.py
