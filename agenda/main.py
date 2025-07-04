@@ -5,7 +5,8 @@ urls = (
     "/", "Index",
     "/insertar","Insertar",
     "/detalle/(.*)", "Detalle",
-    "/editar/(.*)", "Editar"
+    "/editar/(.*)", "Editar",
+    "/borrar/(.*)", "Borrar"
     )
 
 render = web.template.render("templates/")
@@ -122,6 +123,44 @@ class Editar:
             return web.seeother("/")
         except sqlite3.OperationalError as error:
             print(f"Error 006: {error.args[0]}")
+            return web.seeother("/")
+
+
+class Borrar:
+    def GET(self, id_persona):
+        try:
+            conection = sqlite3.connect("agenda.db")
+            cursor = conection.cursor()
+            sql = "select * from personas where id_persona = ?;"
+            datos = (id_persona,)
+            personas = cursor.execute(sql, datos)
+            
+            respuesta = {
+                "persona": personas.fetchone(),
+                "error": None
+            }
+            conection.close()
+            return render.borrar(respuesta)
+        except sqlite3.OperationalError as error:
+            print(f"Error 007: {error.args[0]}")
+            respuesta = {
+                "persona": None,
+                "error": "Error en la base de datos"
+            }
+            return render.borrar(respuesta)
+    
+    def POST(self, id_persona):
+        try:
+            conection = sqlite3.connect("agenda.db")
+            cursor = conection.cursor()
+            sql = "DELETE FROM personas WHERE id_persona = ?;"
+            cursor.execute(sql, (id_persona,))
+            conection.commit()
+            conection.close()
+            print(f"Persona con ID {id_persona} borrada exitosamente")
+            return web.seeother("/")
+        except sqlite3.OperationalError as error:
+            print(f"Error 008: {error.args[0]}")
             return web.seeother("/")
 
 
