@@ -9,6 +9,7 @@ Guía simple de las mejoras agregadas a la aplicación de agenda web.
 - **Borrar personas**: Eliminar registros con confirmación
 - **Botones "Regresar"**: En todas las páginas para navegar fácil
 - **No campos vacíos**: Ya no se pueden guardar registros sin datos
+- **Formato de email**: Solo acepta emails que terminen en "@email.com"
 
 ## 📝 Cambios en Cada Archivo
 
@@ -16,23 +17,32 @@ Guía simple de las mejoras agregadas a la aplicación de agenda web.
 
 **Lo que se agregó:**
 - **Nueva ruta**: `/editar` y `/borrar` para que funcionen los botones
-- **Validación**: Si alguien deja campos vacíos, no se guarda nada
+- **Validación campos vacíos**: Si alguien deja campos vacíos, no se guarda nada
+- **Validación formato email**: Solo acepta emails que terminen en "@email.com"
 - **Clases nuevas**: `Editar` y `Borrar` para manejar estas acciones
 
 **Tips importantes:**
 - `if not form.nombre.strip()` → Revisa si el campo está vacío
+- `if not email.endswith("@email.com")` → Verifica que termine en "@email.com"
 - `required` en HTML → El navegador no deja enviar formularios vacíos
+- `placeholder="ejemplo@email.com"` → Muestra ejemplo del formato correcto
 - `UPDATE` y `DELETE` → Comandos SQL para modificar y borrar
 
 ### 🎨 Templates HTML (Lo que ve el usuario)
 
 #### insertar.html y editar.html
-**Cambio clave:** Se agregó `required` a los campos
+**Cambio 1:** Se agregó `required` a los campos
 ```html
 <input type="text" name="nombre" required>
 <input type="email" name="email" required>
 ```
 **¿Por qué?** Para que no se puedan enviar campos vacíos
+
+**Cambio 2:** Se agregó formato específico para email
+```html
+<input type="email" name="email" placeholder="ejemplo@email.com" title="El email debe terminar en @email.com" required>
+```
+**¿Por qué?** Para guiar al usuario sobre el formato correcto de email
 
 #### detalle.html, insertar.html, editar.html
 **Cambio clave:** Botón "Regresar" en todas las páginas
@@ -57,6 +67,10 @@ Guía simple de las mejoras agregadas a la aplicación de agenda web.
 **Problema:** Se podían guardar personas sin nombre o email
 **Solución:** Validación con `required` en HTML y verificación en Python
 
+### ❌ Formato de email incorrecto
+**Problema:** Se podían guardar emails como "juan@gmail.com" o "pedro@yahoo.com"
+**Solución:** Validación que solo acepta emails terminados en "@email.com"
+
 ### ❌ Sin navegación
 **Problema:** Una vez en una página, era difícil regresar
 **Solución:** Botones "Regresar" en todas las páginas
@@ -72,6 +86,16 @@ Guía simple de las mejoras agregadas a la aplicación de agenda web.
 - Elimina espacios en blanco al inicio y final
 - Ejemplo: "  Juan  " se convierte en "Juan"
 - Útil para detectar si alguien solo puso espacios
+
+### ¿Qué hace `.endswith()`?
+- Verifica si un texto termina con algo específico
+- Ejemplo: `"juan@email.com".endswith("@email.com")` → `True`
+- Ejemplo: `"juan@gmail.com".endswith("@email.com")` → `False`
+
+### ¿Para qué sirve `placeholder`?
+- Muestra un ejemplo dentro del campo de texto
+- Ayuda al usuario a entender qué formato usar
+- Ejemplo: `placeholder="ejemplo@email.com"` muestra esa guía
 
 ### ¿Para qué sirven las rutas?
 - Le dicen a la aplicación qué hacer cuando alguien va a una dirección

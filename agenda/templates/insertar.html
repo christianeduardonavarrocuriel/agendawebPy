@@ -1,3 +1,4 @@
+$def with (error_message="")
 <!DOCTYPE html>
 <html lang="es">
     <head>
@@ -6,12 +7,15 @@
     <body>
         <h1>SQLITE3 Personas</h1>
 
+        $if error_message:
+            <p>$error_message</p>
+
         <form method="POST">
             <label>Nombre</label>
             <input type="text" name="nombre" id="nombre" required>
             <br>
             <label>Email</label>
-            <input type="email" name="email" id="email" required>
+            <input type="email" name="email" id="email" placeholder="ejemplo@email.com" title="El email debe terminar en @email.com" required>
             <br>
             <input type="submit" value="Insertar">
                         <a href="/">

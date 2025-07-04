@@ -49,12 +49,18 @@ class Insertar:
             # Validación: verificar que los campos no estén vacíos
             if not form.nombre.strip() or not form.email.strip():
                 print("Error: Campos vacíos detectados")
-                return render.insertar()
+                return render.insertar("Por favor, llena todos los campos")
+            
+            # Validación: verificar formato de email (nombre@email.com)
+            email = form.email.strip()
+            if not email.endswith("@email.com") or email == "@email.com":
+                print("Error: Formato de email incorrecto")
+                return render.insertar("Email incorrecto. Debe terminar en @email.com")
             
             conection = sqlite3.connect("agenda.db")
             cursor = conection.cursor()
             sql = "INSERT INTO personas(nombre, email) VALUES (?, ?);"
-            data = (form.nombre.strip(), form.email.strip())
+            data = (form.nombre.strip(), email)
             cursor.execute(sql, data)
             print("Executed SQL query successfully.")
             conection.commit()
@@ -127,14 +133,26 @@ class Editar:
                 conection = sqlite3.connect("agenda.db")
                 cursor = conection.cursor()
                 personas = cursor.execute("select * from personas where id_persona = ?;", (id_persona,))
-                respuesta = {"persona": personas.fetchone(), "error": None}
+                respuesta = {"persona": personas.fetchone(), "error": None, "error_message": "Por favor, llena todos los campos"}
+                conection.close()
+                return render.editar(respuesta)
+            
+            # Validación: verificar formato de email (nombre@email.com)
+            email = form.email.strip()
+            if not email.endswith("@email.com") or email == "@email.com":
+                print("Error: Formato de email incorrecto en edición")
+                # Recargar la página de edición si el formato es incorrecto
+                conection = sqlite3.connect("agenda.db")
+                cursor = conection.cursor()
+                personas = cursor.execute("select * from personas where id_persona = ?;", (id_persona,))
+                respuesta = {"persona": personas.fetchone(), "error": None, "error_message": "Email incorrecto. Debe terminar en @email.com"}
                 conection.close()
                 return render.editar(respuesta)
             
             conection = sqlite3.connect("agenda.db")
             cursor = conection.cursor()
             sql = "UPDATE personas SET nombre = ?, email = ? WHERE id_persona = ?;"
-            data = (form.nombre.strip(), form.email.strip(), id_persona)
+            data = (form.nombre.strip(), email, id_persona)
             cursor.execute(sql, data)
             conection.commit()
             conection.close()
