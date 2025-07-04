@@ -138,7 +138,7 @@ http://localhost
 Para desactivar el entorno virtual, se puede utilizar el siguiente comando:
 
 ```bash
-deactivate
+desactivate
 ```
 ## 8. Detener la aplicacion
 Para detener la aplicacion, se puede utilizar el comando `Ctrl+C` en la terminal donde se esta ejecutando la aplicacion. Si se esta ejecutando con gunicorn o waitress, se debe detener el proceso correspondiente.
