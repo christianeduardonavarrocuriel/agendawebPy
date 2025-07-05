@@ -29,20 +29,46 @@ class Index:
                 conection.close()
                 return render.index(respuesta)
             
-            personas = cursor.execute("select * from personas;")
+            personas = cursor.execute("select * from personas;")  # Consulta corregida
+            personas_lista = personas.fetchall()
+            
+            # Verificar si la base de datos está vacía
+            if not personas_lista:
+                respuesta = {
+                    "personas": [],
+                    "error": "Base de datos vacía"
+                }
+                conection.close()
+                return render.index(respuesta)
+            
             respuesta = {
-                "personas" : personas.fetchall(),
+                "personas" : personas_lista,
                 "error": None
             }
             conection.close()
             return render.index(respuesta)
         except sqlite3.OperationalError as error:
             print(f"Error 000: {error.args[0]}")
+            # Verificar si es un error de sintaxis específico
+            error_message = str(error.args[0]).lower()
+            if any(keyword in error_message for keyword in ['no such column', 'syntax error', 'no such table', 'malformed']):
+                respuesta = {
+                    "personas" : [],
+                    "error": "Error de sintaxis en las consultas con la base de datos"
+                }
+            else:
+                respuesta = {
+                    "personas" : [],
+                    "error": "Error al conectar con la base de datos"
+                }
+            print(f"RESPUESTA: {respuesta}")
+            return render.index(respuesta)
+        except sqlite3.DatabaseError as error:
+            print(f"Error SQL sintaxis: {error.args[0]}")
             respuesta = {
                 "personas" : [],
-                "error": "Error al conectar con la base de datos"
+                "error": "Error de sintaxis en las consultas con la base de datos"
             }
-            print(f"RESPUESTA: {respuesta}")
             return render.index(respuesta)
         except Exception as error:
             print(f"Error conexión: {error.args[0]}")
@@ -94,7 +120,15 @@ class Insertar:
             return web.seeother("/")
         except sqlite3.OperationalError as error:
             print(f"Error 002: {error.args[0]}")
-            return render.insertar("Error al conectar con la base de datos")
+            # Verificar si es un error de sintaxis específico
+            error_message = str(error.args[0]).lower()
+            if any(keyword in error_message for keyword in ['no such column', 'syntax error', 'no such table', 'malformed']):
+                return render.insertar("Error de sintaxis en las consultas con la base de datos")
+            else:
+                return render.insertar("Error al conectar con la base de datos")
+        except sqlite3.DatabaseError as error:
+            print(f"Error SQL sintaxis insertar: {error.args[0]}")
+            return render.insertar("Error de sintaxis en las consultas con la base de datos")
         except Exception as error:
             print(f"Error 003: {error.args[0]}")
             return render.insertar("Error al conectar con la base de datos")
@@ -130,9 +164,24 @@ class Detalle:
             return render.detalle(respuesta)
         except sqlite3.OperationalError as error:
             print(f"Error 004: {error.args[0]}")
+            # Verificar si es un error de sintaxis específico
+            error_message = str(error.args[0]).lower()
+            if any(keyword in error_message for keyword in ['no such column', 'syntax error', 'no such table', 'malformed']):
+                respuesta = {
+                    "persona" : None,
+                    "error": "Error de sintaxis en las consultas con la base de datos"
+                }
+            else:
+                respuesta = {
+                    "persona" : None,
+                    "error": "Error al conectar con la base de datos"
+                }
+            return render.detalle(respuesta)
+        except sqlite3.DatabaseError as error:
+            print(f"Error SQL sintaxis detalle: {error.args[0]}")
             respuesta={
                 "persona" : None,
-                "error": "Error al conectar con la base de datos"
+                "error": "Error de sintaxis en las consultas con la base de datos"
             }
             return render.detalle(respuesta)
         except Exception as error:
@@ -172,9 +221,24 @@ class Editar:
             return render.editar(respuesta)
         except sqlite3.OperationalError as error:
             print(f"Error 005: {error.args[0]}")
+            # Verificar si es un error de sintaxis específico
+            error_message = str(error.args[0]).lower()
+            if any(keyword in error_message for keyword in ['no such column', 'syntax error', 'no such table', 'malformed']):
+                respuesta = {
+                    "persona": None,
+                    "error": "Error de sintaxis en las consultas con la base de datos"
+                }
+            else:
+                respuesta = {
+                    "persona": None,
+                    "error": "Error al conectar con la base de datos"
+                }
+            return render.editar(respuesta)
+        except sqlite3.DatabaseError as error:
+            print(f"Error SQL sintaxis editar GET: {error.args[0]}")
             respuesta = {
                 "persona": None,
-                "error": "Error al conectar con la base de datos"
+                "error": "Error de sintaxis en las consultas con la base de datos"
             }
             return render.editar(respuesta)
         except Exception as error:
@@ -233,10 +297,24 @@ class Editar:
             return web.seeother("/")
         except sqlite3.OperationalError as error:
             print(f"Error 006: {error.args[0]}")
-            # En caso de error, mostrar mensaje en la página de edición
+            # Verificar si es un error de sintaxis específico
+            error_message = str(error.args[0]).lower()
+            if any(keyword in error_message for keyword in ['no such column', 'syntax error', 'no such table', 'malformed']):
+                respuesta = {
+                    "persona": None,
+                    "error": "Error de sintaxis en las consultas con la base de datos"
+                }
+            else:
+                respuesta = {
+                    "persona": None,
+                    "error": "Error al conectar con la base de datos"
+                }
+            return render.editar(respuesta)
+        except sqlite3.DatabaseError as error:
+            print(f"Error SQL sintaxis editar POST: {error.args[0]}")
             respuesta = {
                 "persona": None,
-                "error": "Error al conectar con la base de datos"
+                "error": "Error de sintaxis en las consultas con la base de datos"
             }
             return render.editar(respuesta)
         except Exception as error:
@@ -276,9 +354,24 @@ class Borrar:
             return render.borrar(respuesta)
         except sqlite3.OperationalError as error:
             print(f"Error 007: {error.args[0]}")
+            # Verificar si es un error de sintaxis específico
+            error_message = str(error.args[0]).lower()
+            if any(keyword in error_message for keyword in ['no such column', 'syntax error', 'no such table', 'malformed']):
+                respuesta = {
+                    "persona": None,
+                    "error": "Error de sintaxis en las consultas con la base de datos"
+                }
+            else:
+                respuesta = {
+                    "persona": None,
+                    "error": "Error al conectar con la base de datos"
+                }
+            return render.borrar(respuesta)
+        except sqlite3.DatabaseError as error:
+            print(f"Error SQL sintaxis borrar GET: {error.args[0]}")
             respuesta = {
                 "persona": None,
-                "error": "Error al conectar con la base de datos"
+                "error": "Error de sintaxis en las consultas con la base de datos"
             }
             return render.borrar(respuesta)
         except Exception as error:
@@ -312,9 +405,24 @@ class Borrar:
             return web.seeother("/")
         except sqlite3.OperationalError as error:
             print(f"Error 008: {error.args[0]}")
+            # Verificar si es un error de sintaxis específico
+            error_message = str(error.args[0]).lower()
+            if any(keyword in error_message for keyword in ['no such column', 'syntax error', 'no such table', 'malformed']):
+                respuesta = {
+                    "persona": None,
+                    "error": "Error de sintaxis en las consultas con la base de datos"
+                }
+            else:
+                respuesta = {
+                    "persona": None,
+                    "error": "Error al conectar con la base de datos"
+                }
+            return render.borrar(respuesta)
+        except sqlite3.DatabaseError as error:
+            print(f"Error SQL sintaxis borrar POST: {error.args[0]}")
             respuesta = {
                 "persona": None,
-                "error": "Error al conectar con la base de datos"
+                "error": "Error de sintaxis en las consultas con la base de datos"
             }
             return render.borrar(respuesta)
         except Exception as error:
