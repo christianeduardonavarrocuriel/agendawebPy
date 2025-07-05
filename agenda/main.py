@@ -18,6 +18,17 @@ class Index:
         try:
             conection = sqlite3.connect("agenda.db")
             cursor = conection.cursor()
+            
+            # Verificar si la tabla personas existe
+            cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='personas';")
+            if not cursor.fetchone():
+                respuesta = {
+                    "personas": [],
+                    "error": "Error al conectar con la tabla Personas"
+                }
+                conection.close()
+                return render.index(respuesta)
+            
             personas = cursor.execute("select * from personas;")
             respuesta = {
                 "personas" : personas.fetchall(),
@@ -67,6 +78,13 @@ class Insertar:
             
             conection = sqlite3.connect("agenda.db")
             cursor = conection.cursor()
+            
+            # Verificar si la tabla personas existe antes de insertar
+            cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='personas';")
+            if not cursor.fetchone():
+                conection.close()
+                return render.insertar("Error al conectar con la tabla Personas")
+            
             sql = "INSERT INTO personas(nombre, email) VALUES (?, ?);"
             data = (form.nombre.strip(), email)
             cursor.execute(sql, data)
@@ -88,6 +106,17 @@ class Detalle:
         try:
             conection = sqlite3.connect("agenda.db")
             cursor = conection.cursor()
+            
+            # Verificar si la tabla personas existe
+            cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='personas';")
+            if not cursor.fetchone():
+                respuesta = {
+                    "persona": None,
+                    "error": "Error al conectar con la tabla Personas"
+                }
+                conection.close()
+                return render.detalle(respuesta)
+            
             sql = "select * from personas where id_persona = ?;"
             datos = (id_persona,)
             personas = cursor.execute(sql,datos)
@@ -120,6 +149,17 @@ class Editar:
         try:
             conection = sqlite3.connect("agenda.db")
             cursor = conection.cursor()
+            
+            # Verificar si la tabla personas existe
+            cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='personas';")
+            if not cursor.fetchone():
+                respuesta = {
+                    "persona": None,
+                    "error": "Error al conectar con la tabla Personas"
+                }
+                conection.close()
+                return render.editar(respuesta)
+            
             sql = "select * from personas where id_persona = ?;"
             datos = (id_persona,)
             personas = cursor.execute(sql, datos)
@@ -174,6 +214,17 @@ class Editar:
             
             conection = sqlite3.connect("agenda.db")
             cursor = conection.cursor()
+            
+            # Verificar si la tabla personas existe antes de actualizar
+            cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='personas';")
+            if not cursor.fetchone():
+                conection.close()
+                respuesta = {
+                    "persona": None,
+                    "error": "Error al conectar con la tabla Personas"
+                }
+                return render.editar(respuesta)
+            
             sql = "UPDATE personas SET nombre = ?, email = ? WHERE id_persona = ?;"
             data = (form.nombre.strip(), email, id_persona)
             cursor.execute(sql, data)
@@ -202,6 +253,17 @@ class Borrar:
         try:
             conection = sqlite3.connect("agenda.db")
             cursor = conection.cursor()
+            
+            # Verificar si la tabla personas existe
+            cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='personas';")
+            if not cursor.fetchone():
+                respuesta = {
+                    "persona": None,
+                    "error": "Error al conectar con la tabla Personas"
+                }
+                conection.close()
+                return render.borrar(respuesta)
+            
             sql = "select * from personas where id_persona = ?;"
             datos = (id_persona,)
             personas = cursor.execute(sql, datos)
@@ -231,6 +293,17 @@ class Borrar:
         try:
             conection = sqlite3.connect("agenda.db")
             cursor = conection.cursor()
+            
+            # Verificar si la tabla personas existe antes de borrar
+            cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='personas';")
+            if not cursor.fetchone():
+                conection.close()
+                respuesta = {
+                    "persona": None,
+                    "error": "Error al conectar con la tabla Personas"
+                }
+                return render.borrar(respuesta)
+            
             sql = "DELETE FROM personas WHERE id_persona = ?;"
             cursor.execute(sql, (id_persona,))
             conection.commit()
