@@ -23,14 +23,22 @@ class Index:
                 "personas" : personas.fetchall(),
                 "error": None
             }
+            conection.close()
             return render.index(respuesta)
         except sqlite3.OperationalError as error:
             print(f"Error 000: {error.args[0]}")
             respuesta = {
                 "personas" : [],
-                "error": "Error en la base de datos"
+                "error": "Error al conectar con la base de datos"
             }
             print(f"RESPUESTA: {respuesta}")
+            return render.index(respuesta)
+        except Exception as error:
+            print(f"Error conexión: {error.args[0]}")
+            respuesta = {
+                "personas" : [],
+                "error": "Error al conectar con la base de datos"
+            }
             return render.index(respuesta)
 
 class Insertar:
@@ -68,10 +76,10 @@ class Insertar:
             return web.seeother("/")
         except sqlite3.OperationalError as error:
             print(f"Error 002: {error.args[0]}")
-            return web.seeother("/")
+            return render.insertar("Error al conectar con la base de datos")
         except Exception as error:
             print(f"Error 003: {error.args[0]}")
-            return web.seeother("/")
+            return render.insertar("Error al conectar con la base de datos")
 
 
 class Detalle:
@@ -89,12 +97,20 @@ class Detalle:
                 "error": None
             }
             print(f"RESPUESTA: {respuesta}")
+            conection.close()
             return render.detalle(respuesta)
         except sqlite3.OperationalError as error:
             print(f"Error 004: {error.args[0]}")
             respuesta={
-                "persona" : {},
-                "error": "Error en la base de datos"
+                "persona" : None,
+                "error": "Error al conectar con la base de datos"
+            }
+            return render.detalle(respuesta)
+        except Exception as error:
+            print(f"Error conexión detalle: {error.args[0]}")
+            respuesta={
+                "persona" : None,
+                "error": "Error al conectar con la base de datos"
             }
             return render.detalle(respuesta)
 
@@ -117,8 +133,15 @@ class Editar:
         except sqlite3.OperationalError as error:
             print(f"Error 005: {error.args[0]}")
             respuesta = {
-                "persona": {},
-                "error": "Error en la base de datos"
+                "persona": None,
+                "error": "Error al conectar con la base de datos"
+            }
+            return render.editar(respuesta)
+        except Exception as error:
+            print(f"Error conexión editar: {error.args[0]}")
+            respuesta = {
+                "persona": None,
+                "error": "Error al conectar con la base de datos"
             }
             return render.editar(respuesta)
     
@@ -159,7 +182,19 @@ class Editar:
             return web.seeother("/")
         except sqlite3.OperationalError as error:
             print(f"Error 006: {error.args[0]}")
-            return web.seeother("/")
+            # En caso de error, mostrar mensaje en la página de edición
+            respuesta = {
+                "persona": None,
+                "error": "Error al conectar con la base de datos"
+            }
+            return render.editar(respuesta)
+        except Exception as error:
+            print(f"Error conexión editar POST: {error.args[0]}")
+            respuesta = {
+                "persona": None,
+                "error": "Error al conectar con la base de datos"
+            }
+            return render.editar(respuesta)
 
 
 class Borrar:
@@ -181,7 +216,14 @@ class Borrar:
             print(f"Error 007: {error.args[0]}")
             respuesta = {
                 "persona": None,
-                "error": "Error en la base de datos"
+                "error": "Error al conectar con la base de datos"
+            }
+            return render.borrar(respuesta)
+        except Exception as error:
+            print(f"Error conexión borrar: {error.args[0]}")
+            respuesta = {
+                "persona": None,
+                "error": "Error al conectar con la base de datos"
             }
             return render.borrar(respuesta)
     
@@ -197,7 +239,18 @@ class Borrar:
             return web.seeother("/")
         except sqlite3.OperationalError as error:
             print(f"Error 008: {error.args[0]}")
-            return web.seeother("/")
+            respuesta = {
+                "persona": None,
+                "error": "Error al conectar con la base de datos"
+            }
+            return render.borrar(respuesta)
+        except Exception as error:
+            print(f"Error conexión borrar POST: {error.args[0]}")
+            respuesta = {
+                "persona": None,
+                "error": "Error al conectar con la base de datos"
+            }
+            return render.borrar(respuesta)
 
 
 application = app.wsgifunc()

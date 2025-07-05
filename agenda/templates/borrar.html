@@ -7,7 +7,9 @@ $def with (respuesta={})
     <body>
         <h1>Borrar Persona</h1>
         
-        $if respuesta.get('persona'):
+        $if respuesta.get('error'):
+            <p>$respuesta['error']</p>
+        $elif respuesta.get('persona'):
             $ nombre = '%s' % respuesta['persona'][1]
             $ email = '%s' % respuesta['persona'][2]
             
@@ -22,8 +24,10 @@ $def with (respuesta={})
             </form>
         $else:
             <p>Persona no encontrada.</p>
-            <a href="/">
-                <button type="button">Regresar</button>
-            </a>
+
+        <br>
+        <a href="/">
+            <button type="button">Regresar</button>
+        </a>
     </body>
 </html>

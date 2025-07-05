@@ -7,23 +7,28 @@ $def with (respuesta={})
     <body>
         <h1>Editar Persona</h1>
 
-        $if respuesta.get('error_message'):
+        $if respuesta.get('error'):
+            <p>$respuesta['error']</p>
+        $elif respuesta.get('error_message'):
             <p>$respuesta['error_message']</p>
 
-        <form method="POST">
-            $ nombre = '%s' % respuesta['persona'][1] if respuesta.get('persona') else ''
-            $ email = '%s' % respuesta['persona'][2] if respuesta.get('persona') else ''
-            
-            <label>Nombre</label>
-            <input type="text" name="nombre" id="nombre" value=$nombre required>
-            <br>
-            <label>Email</label>
-            <input type="email" name="email" id="email" value=$email placeholder="ejemplo@email.com" title="El email debe terminar en @email.com" required>
-            <br>
-            <input type="submit" value="Editar">
-            <a href="/">
-                <button type="button">Regresar</button>
-            </a>
-        </form>
+        $if respuesta.get('error') is None:
+            <form method="POST">
+                $ nombre = '%s' % respuesta['persona'][1] if respuesta.get('persona') else ''
+                $ email = '%s' % respuesta['persona'][2] if respuesta.get('persona') else ''
+                
+                <label>Nombre</label>
+                <input type="text" name="nombre" id="nombre" value=$nombre required>
+                <br>
+                <label>Email</label>
+                <input type="email" name="email" id="email" value=$email placeholder="ejemplo@email.com" title="El email debe terminar en @email.com" required>
+                <br>
+                <input type="submit" value="Editar">
+            </form>
+
+        <br>
+        <a href="/">
+            <button type="button">Regresar</button>
+        </a>
     </body>
 </html>
